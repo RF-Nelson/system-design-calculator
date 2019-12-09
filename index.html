@@ -1,116 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>System Design Calculator</title>
+  <title>System Design Calculator</title>
 </head>
 <body>
-	<p>
-		<b>Read/Write Ratio</b>
-		<p>
-			Read
-			<input type="number" id="read" placeholder="Read" />
-		</p>
-		<p>
-			Write
-			<input type="number" id="write" placeholder="Write" />
-		</p>
-	</p>
-	<p>
-		<b>New Records per Day</b>
-		<input type="number" id="records" placeholder="New records per day" />
-	</p>
-	<p>
-		<b>Avg Record Size (in kB)</b>
-		<input type="number" id="record-size" placeholder="Avg Record Size" />
-	</p>
-	<button onclick="window.calculate()">Calculate</button>
-	<hr>
-	<p>
-		<b>Traffic Estimates</b>
-		<p>
-			Reads per second
-			<input type="number" id="reads-per-second" readonly />
-		</p>
-		<p>
-			Writes per second
-		<input type="number" id="writes-per-second" readonly />
-		</p>
-	</p>
-	<p>
-		<b>Bandwidth Estimates</b>
-		<p>
-			Egress per second
-			<input type="text" id="egress-per-second" readonly />
-		</p>
-		<p>
-			Ingress per second
-		<input type="text" id="ingress-per-second" readonly />
-		</p>
-	</p>
-	<p>
-		<b>Storage Estimates</b>
-		<p>
-			per day
-			<input type="text" id="storage-per-day" readonly />
-		</p>
-		<p>
-			per decade
-			<input type="text" id="storage-per-decade" readonly />
-		</p>
-	</p>
-	<p>
-		<b>Memory Estimates per day (caching 20%)</b>
-		<p>
-			<input type="text" id="cache-per-day" readonly />
-		</p>
-	</p>
+  <p>
+    <b>Read/Write Ratio</b>
+    <p>
+      Read
+      <input type="number" id="read" placeholder="Read" />
+    </p>
+    <p>
+      Write
+      <input type="number" id="write" placeholder="Write" />
+    </p>
+  </p>
+  <p>
+    <b>New Records per Day</b>
+    <input type="number" id="records" placeholder="New records per day" />
+  </p>
+  <p>
+    <b>Avg Record Size (in kB)</b>
+    <input type="number" id="record-size" placeholder="Avg Record Size" />
+  </p>
+  <button onclick="window.calculate()">Calculate</button>
+  <hr>
+  <p>
+    <b>Traffic Estimates</b>
+    <p>
+      Reads per second
+      <input type="number" id="reads-per-second" readonly />
+    </p>
+    <p>
+      Writes per second
+    <input type="number" id="writes-per-second" readonly />
+    </p>
+  </p>
+  <p>
+    <b>Bandwidth Estimates</b>
+    <p>
+      Egress per second
+      <input type="text" id="egress-per-second" readonly />
+    </p>
+    <p>
+      Ingress per second
+    <input type="text" id="ingress-per-second" readonly />
+    </p>
+  </p>
+  <p>
+    <b>Storage Estimates</b>
+    <p>
+      per day
+      <input type="text" id="storage-per-day" readonly />
+    </p>
+    <p>
+      per decade
+      <input type="text" id="storage-per-decade" readonly />
+    </p>
+  </p>
+  <p>
+    <b>Memory Estimates per day (caching 20%)</b>
+    <p>
+      <input type="text" id="cache-per-day" readonly />
+    </p>
+  </p>
 </body>
 <script type="text/javascript">
-	function calculate () {
-		let read = getValue("read")
-		let write = getValue("write")
-		let newRecordsPerDay = getValue("records")
-		let size = getValue("record-size")
+  function calculate () {
+    let read = getValue("read")
+    let write = getValue("write")
+    let newRecordsPerDay = getValue("records")
+    let size = getValue("record-size")
 
-		if (write === 1) {
-			read *= newRecordsPerDay
-			write = newRecordsPerDay
-		} else if (read === 1) {
-			read = newRecordsPerDay
-			write *= newRecordsPerDay
-		}
+    if (write === 1) {
+      read *= newRecordsPerDay
+      write = newRecordsPerDay
+    } else if (read === 1) {
+      read = newRecordsPerDay
+      write *= newRecordsPerDay
+    }
 
-		read = read / 24 / 60 / 60
-		write = write / 24 / 60 / 60
+    read = read / 24 / 60 / 60
+    write = write / 24 / 60 / 60
 
-		let storage = newRecordsPerDay * size
+    let storage = newRecordsPerDay * size
 
-		document.getElementById("reads-per-second").value = read
-		document.getElementById("writes-per-second").value = write
+    document.getElementById("reads-per-second").value = read
+    document.getElementById("writes-per-second").value = write
 
-		document.getElementById("ingress-per-second").value = bytesToSize(write * size * 1000)
-		document.getElementById("egress-per-second").value = bytesToSize(read * size * 1000)
-		
-		let storagePerDay = bytesToSize(storage * 1000)
-		let storagePerDecade = bytesToSize(storage * 1000 * 365 * 10)
+    document.getElementById("ingress-per-second").value = bytesToSize(write * size * 1000)
+    document.getElementById("egress-per-second").value = bytesToSize(read * size * 1000)
+    
+    let storagePerDay = bytesToSize(storage * 1000)
+    let storagePerDecade = bytesToSize(storage * 1000 * 365 * 10)
 
-		document.getElementById("storage-per-day").value = storagePerDay
-		document.getElementById("storage-per-decade").value = storagePerDecade
+    document.getElementById("storage-per-day").value = storagePerDay
+    document.getElementById("storage-per-decade").value = storagePerDecade
 
-		let cacheSize = bytesToSize(getValue("read") * newRecordsPerDay * 0.2 * size * 1000)
-		document.getElementById("cache-per-day").value = cacheSize
-	}
+    let cacheSize = bytesToSize(getValue("read") * newRecordsPerDay * 0.2 * size * 1000)
+    document.getElementById("cache-per-day").value = cacheSize
+  }
 
-	function getValue(id) {
-		return parseInt(document.getElementById(id).value)
-	}
+  function getValue(id) {
+    return parseInt(document.getElementById(id).value)
+  }
 
-	function bytesToSize(bytes) {
-	   let sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'ZB'];
-	   if (bytes == 0) return '0 Byte';
-	   let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1000)));
-	   return Math.round(bytes / Math.pow(1000, i), 2) + ' ' + sizes[i];
-	}
+  function bytesToSize(bytes) {
+    let sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'ZB'];
+    if (bytes == 0) return '0 Byte';
+    let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1000)));
+    return Math.round(bytes / Math.pow(1000, i), 2) + ' ' + sizes[i];
+  }
 </script>
 
 </html>
